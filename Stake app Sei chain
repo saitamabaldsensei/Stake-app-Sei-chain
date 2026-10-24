@@ -1,0 +1,278 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sei Simple Stake</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #10131c;
+      color: #ffffff;
+    }
+
+    header {
+      padding: 22px 8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #292d3a;
+    }
+
+    .logo {
+      color: #65e6dc;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .network {
+      color: #65e6dc;
+      font-size: 13px;
+    }
+
+    main {
+      max-width: 480px;
+      margin: 55px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: #1b202d;
+      border: 1px solid #303747;
+      border-radius: 18px;
+      padding: 28px;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 28px;
+    }
+
+    .muted {
+      color: #9da6b8;
+      line-height: 1.6;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 25px 0;
+    }
+
+    .stat {
+      background: #252c3b;
+      padding: 16px;
+      border-radius: 12px;
+    }
+
+    .stat p {
+      color: #9da6b8;
+      font-size: 13px;
+      margin: 0 0 10px;
+    }
+
+    .stat strong {
+      font-size: 20px;
+      overflow-wrap: anywhere;
+    }
+
+    label {
+      display: block;
+      margin: 20px 0 10px;
+      color: #c7ccda;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border: 1px solid #41495b;
+      border-radius: 10px;
+      background: #101521;
+      color: white;
+      font-size: 17px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #65e6dc;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    button {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .stake {
+      background: #65e6dc;
+      color: #10131c;
+    }
+
+    .unstake {
+      background: #343c4e;
+      color: white;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    #message {
+      margin-top: 18px;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #778195;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">SEI STAKE</div>
+    <div class="network">Sei Network</div>
+  </header>
+
+  <main>
+    <div class="card">
+      <h1>Simple Staking</h1>
+      <p class="muted">
+        Stake your SEI and track your staking balance
+        with this simple demo application.
+      </p>
+
+      <div class="stats">
+        <div class="stat">
+          <p>Staked Balance</p>
+          <strong><span id="balance">0</span> SEI</strong>
+        </div>
+
+        <div class="stat">
+          <p>Estimated APR</p>
+          <strong>5%</strong>
+        </div>
+
+        <div class="stat">
+          <p>Estimated Yearly Reward</p>
+          <strong><span id="reward">0</span> SEI</strong>
+        </div>
+
+        <div class="stat">
+          <p>Network</p>
+          <strong>Sei</strong>
+        </div>
+      </div>
+
+      <label for="amount">Amount (SEI)</label>
+      <input
+        id="amount"
+        type="number"
+        min="0.000001"
+        step="any"
+        placeholder="Enter SEI amount"
+      >
+
+      <div class="buttons">
+        <button class="stake" onclick="stake()">Stake SEI</button>
+        <button class="unstake" onclick="unstake()">Unstake</button>
+      </div>
+
+      <p id="message" class="muted">
+        Demo mode: transactions are not sent to the blockchain.
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    Simple Sei Staking Demo | Built for GitHub
+  </footer>
+
+  <script>
+    let stakedBalance = 0;
+    const APR = 0.05;
+
+    function updateDisplay() {
+      document.getElementById("balance").textContent =
+        stakedBalance.toLocaleString("en-US", {
+          maximumFractionDigits: 6
+        });
+
+      document.getElementById("reward").textContent =
+        (stakedBalance * APR).toLocaleString("en-US", {
+          maximumFractionDigits: 6
+        });
+    }
+
+    function getAmount() {
+      return Number(document.getElementById("amount").value);
+    }
+
+    function stake() {
+      const amount = getAmount();
+      const message = document.getElementById("message");
+
+      if (!Number.isFinite(amount) || amount <= 0) {
+        message.textContent = "Please enter a valid SEI amount.";
+        return;
+      }
+
+      stakedBalance += amount;
+      updateDisplay();
+
+      message.textContent =
+        "Demo stake successful: " + amount + " SEI added.";
+
+      document.getElementById("amount").value = "";
+    }
+
+    function unstake() {
+      const amount = getAmount();
+      const message = document.getElementById("message");
+
+      if (!Number.isFinite(amount) || amount <= 0) {
+        message.textContent = "Please enter a valid SEI amount.";
+        return;
+      }
+
+      if (amount > stakedBalance) {
+        message.textContent = "Insufficient staked balance.";
+        return;
+      }
+
+      stakedBalance -= amount;
+      updateDisplay();
+
+      message.textContent =
+        "Demo unstake successful: " + amount + " SEI removed.";
+
+      document.getElementById("amount").value = "";
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>
